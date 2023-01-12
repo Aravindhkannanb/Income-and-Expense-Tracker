@@ -13,8 +13,6 @@ const Homecomponent=()=>{
     const [transactions,updateTransaction]=useState([]);
     const [exp,setExp]=useState(0);
     const [inc,setInc]=useState(0);
-
-
     const addTransaction=(payload)=>{
         const transactionArray=[...transactions];
         transactionArray.push(payload);

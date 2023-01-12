@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
+import {Route,Link,Routes,BrowserRouter} from 'react-router-dom';
+
 const Container=styled.div`
 display:flex;
 flex-direction:column;
@@ -17,6 +19,15 @@ font-weight:bold;
     outline:none;
     width:100%;
 }
+`;
+const AddTransaction=styled.button`
+background:black;
+color:white;
+padding:5px 10px;
+border-radius:4px;
+cursor:pointer;
+font-weight:bold;
+font-size:15px;
 `;
 const Cell=styled.div`
 display:flex;
@@ -67,7 +78,11 @@ useEffect(()=>filterData(searchText),[props.transactions]);
             {filteredTransaction.length?filteredTransaction.map((payload)=>(
                 <TransactionCell payload={payload} />
             )):""};
+                            <Link to="/Remainder"><AddTransaction >Remainder</AddTransaction></Link>
+                            <Link to="/currency"><AddTransaction >Currency</AddTransaction></Link>
+
         </Container>
+        
     )
 }
 export default Transactioncomponent;

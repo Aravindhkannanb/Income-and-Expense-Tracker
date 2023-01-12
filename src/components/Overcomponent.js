@@ -1,5 +1,11 @@
-import React,{ useState } from "react";
+import React,{ useState,useEffect } from "react";
 import styled from "styled-components";
+import SpeechRecognition,{useSpeechRecognition} from "react-speech-recognition";
+import Speech from './speech.js';
+import  {db} from "./firebase.js";
+import {Route,Link,Routes,BrowserRouter} from 'react-router-dom';
+
+import { addDoc, collection } from "firebase/firestore";
 const Container=styled.div`
 display:flex;
 flex-direction:column;
@@ -73,18 +79,30 @@ font-size:14px;
 }
 `;
 const AddTransactionView=(props)=>{
+   
     const [amount,setAmount]=useState();
     const [des,setDes]=useState();
     const [date,setDate]=useState();
     const [type,setType]=useState("Expense");
+    const details=collection(db,"UserTransactiondetails");
 const addTransaction=()=>{
     props.addTransaction({amount:Number(amount),des,type,id:date})
     props.toggleAddTxn();
+    addDoc(details,{
+        Amount:amount,
+        Description:des,
+        Date:date,
+        Type:type
+    })
+    
 }
 return(
     <AddTransactionContainer>
+        <form >
         <input placeholder="Amount" type="number" value={amount} onChange={e=>setAmount(e.target.value)}></input>
+        <Speech/>
         <input placeholder="Description" value={des} onChange={e=>setDes(e.target.value)}></input>
+        <Speech />
         <input placeholder="Date" value={date} onChange={e=>setDate(e.target.value) } type="date"></input>
         <RadioBox>
         <input type="radio" id="expense" name="type" value="Expense"
@@ -99,7 +117,8 @@ return(
         ></input>
         <label for="income">Income</label>
         </RadioBox>
-        <AddTransaction onClick={addTransaction}>Add Transaction</AddTransaction>
+        <AddTransaction type="submit" onClick={addTransaction}
+>Add Transaction</AddTransaction></form>
     </AddTransactionContainer>
 )
 }
@@ -109,6 +128,7 @@ const Overviewcomponent=(props)=>{
         <Container>
             <BalanceBox>Balance:${props.inc-props.exp}
                 <AddTransaction onClick={()=>toggleAddTxn(!isAddTxnVisible)}>{isAddTxnVisible?"Cancel":"Add"}</AddTransaction>
+                <Link to="/Upload"><AddTransaction >Upload Csv</AddTransaction></Link>
             </BalanceBox>
             {isAddTxnVisible &&<AddTransactionView  toggleAddTxn={toggleAddTxn} addTransaction={props.addTransaction}/>}
             <ExpenseContainer>
